@@ -1,0 +1,32 @@
+.app {
+  width: 500px;
+  background-color: lightgrey;
+  border: 1px solid black;
+  margin: 0 auto;
+  margin-top: 35vh;
+  padding: 10px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+}
+
+.form-link {
+  display: flex;
+  
+}
+
+.btn button {
+  width: 200px;
+}
+
+.register_link {
+  display: block;
+  font-size: 20px;
+}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
+</head>
+<body>
+  <a href="/logout">Logout</a>
+  <img src="images/{{user.img}}" alt="img">
+  {{#with user}}
+    <div>{{{username}}}</div>
+    <div>{{{email}}}</div>
+  {{/with}}
+  <form method="post" action="/sendData">
+    <input placeholder="username" name="username" type="text">
+    <input placeholder="message" name="message" type="text">
+    <button type="submit">Send Email</button>
+  </form>
+</body>
+</html>

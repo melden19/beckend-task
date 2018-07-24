@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  {{#if errors}}
+    {{#each errors.array}}
+      <div>{{msg}}</div>
+    {{/each}}
+  {{/if}}
+  <form class="form" method="post" action="/signup" enctype="multipart/form-data">
+    <input type="file" name="img">
+    <input placeholder="name" type="text" name="name">
+    <input placeholder="username" type="text" name="username">
+    <input placeholder="Email" type="email" name="email">
+    <input placeholder="Password" type="password" name="password">
+    <input placeholder="Confirm password" type="password" name="password2">
+    <div class="btn">
+      <button type="submit">Register</button>
+    </div>
+    <div class="form-link">
+      <a class="register_link" href="/signin">login</a>
+    </div>
+  </form>
+</body>
+</html>
