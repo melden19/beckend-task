@@ -6,7 +6,6 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const multer = require('multer');
 const thumb = require('node-thumbnail').thumb;
-// const nodemailer = require('nodemailer');
 const sgMail = require('@sendgrid/mail');
 const axios = require('axios');
 const weather = require('weather-js');
@@ -29,12 +28,12 @@ router.get('/signup', (req, res) => {
 router.get('/signin', (req, res) => {
   res.render('login');
 })
-//register user
+
 router.post('/signup', upload.single('img'),
  [
   check('username' , 'username is required').exists(),
   check('username', 'username is too short').isLength({ min: 6 }),
-  check('password').isLength({ min: 5 }),
+  check('password', 'password too short').isLength({ min: 5 }),
 ],
  (req, res) => {
   const file = req.file.filename,
@@ -48,7 +47,6 @@ router.post('/signup', upload.single('img'),
   arrFile = file.split('.');
   newFile = arrFile[0] + '_thumb' + '.jpg'
   if (!errors.isEmpty()) {
-    // return res.status(422).json({ errors: errors.array() });
     res.render('register', {
       errors: errors
     });
@@ -133,50 +131,57 @@ router.get('/images/:name', (req, res) => {
   res.sendFile(`${process.cwd()}/public/thumbs/${req.params.name}`);
 })
 
-router.post('/sendData', 
-  [
-    check('username' , 'username is required').exists()
-  ],
+router.post('/sendData',
   (req, res) => {
-  errors = validationResult(req);
-  console.log(errors);
-  if (!errors.isEmpty()) {
-    res.send('exist')
-  }
   const id = `9c1b8f37b1656b7656de`;
   const secret = `2d0862a5a870929ced7b7be459bbc1da5fa0db7f`;
   const usernames = req.body.username.split(' ');
   const message = req.body.message;
   console.log(usernames);
+  let sendResults = [];
   for (let username of usernames) {
     let currentWeather = '';
     const url = `https://api.github.com/users/${username}?client_id=${id}&client_secret=${secret}`
     axios.get(url).then(json => {
-      const { location, email} = json.data;
+      const { location, email } = json.data;
       weather.find({search: location}, (err, result) => {
         if (err) {
           return err;
         } else {
           currentWeather = result[0].current;
-          sgMail.setApiKey('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');
+          sgMail.setApiKey('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');
           const msg = {
             to: email,
             from: 'denismel19@gmail.com',
-            subject: 'Sending with SendGrid is Fun',
-            text: 'and easy to do anywhere, even with Node.js',
+            subject: 'Backend Task',
+            text: 'weather',
             html: `<strong>${message}</strong><hr/>
             Temperature: ${currentWeather.temperature}°C <br />
             Рumidity: ${currentWeather.humidity}% <br />
-            Windspeed: ${currentWeather.wibdspeed}mph <br />
+            Windspeed: ${currentWeather.windspeed}<br />
             Сloudiness: ${currentWeather.skytext} <br />
-            `,
+            `
           }
-          // res.json({ email: email, currentWeather});
-          sgMail.send(msg)
+          sgMail.send(msg).then(
+          () => {
+            sendResults.push(true);
+            console.log('true')
+            console.log('arr: ', sendResults)
+          },
+          () => {
+            sendResults.push(false)
+            console.log('false')
+          }).then(() => {
+            if (sendResults.length === usernames.length)
+            {
+              console.log('res')
+              console.log('arr: ', sendResults)
+              res.json({sendResults})
+            }
+          })
         }
       })
     })
   }
-  
 })
 module.exports = router;
